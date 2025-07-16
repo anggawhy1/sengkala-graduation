@@ -2,65 +2,93 @@
 
 namespace App\Controllers;
 
+use App\Controllers\BaseController;
+use App\Models\PesananModel;
+use App\Models\PembayaranModel;
+
 class Dashboard extends BaseController
 {
     public function index()
-{
-    $data = [
-        'tanggal' => '10 Oktober 2025',
-        'statistik' => [
-            'pesananHariIni' => 12,
-            'slotTersedia' => 3,
-            'fotograferBertugas' => 3,
-            'menungguKonfirmasi' => 4,
-            'pembayaranMasuk' => 2750000,
-            'updateTerakhir' => '22.30 WIB'
-        ],
-        'aktivitasTerbaru' => [
-            [
-                'id' => 'PP-20250610-001',
-                'klien' => 'Adinda Kusuma',
-                'jam' => '18.45.30 WIB',
-                'status' => 'Menunggu Konfirmasi'
-            ],
-            [
-                'id' => 'CP-20250610-002',
-                'klien' => 'Bagas Herlambang',
-                'jam' => '18.55.40 WIB',
-                'status' => ''
-            ],
-            [
-                'id' => 'GP-20250610-003',
-                'klien' => 'Bintang Ayu',
-                'jam' => '19.15.21 WIB',
-                'status' => ''
-            ],
-            [
-                'id' => 'PP-20250610-004',
-                'klien' => 'Lintang Bulan',
-                'jam' => '19.22.00 WIB',
-                'status' => ''
-            ],
-        ],
-        'jadwalHariIni' => [
-            [
-                'jam' => '09.30 WIB',
-                'fotografer' => 'Justine Bieber',
-                'klien' => 'Alfiyatul'
-            ]
-        ],
-        // 🎯 Tambahkan data grafik di sini
-        'grafikPesanan' => [
-            'labels' => ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
-            'data' => [5, 7, 3, 9, 4, 2, 6]
-        ],
-        'statusPesanan' => [
-            'labels' => ['Diproses', 'Selesai', 'Dibatalkan'],
-            'data' => [10, 20, 5]
-        ]
-    ];
+    {
+        $pesananModel = new PesananModel();
 
-    return view('admin/dashboard', $data);
-}
+        // Jumlah pesanan hari ini
+        $statistik['pesananHariIni'] = $pesananModel->getPesananHariIni();
+        $statistik['menungguKonfirmasi'] = $pesananModel->getMenungguKonfirmasiHariIni(); // tambahkan ini
 
+        // Statistik tambahan
+        $pembayaranModel = new PembayaranModel();
+
+        // Total Pembayaran Masuk
+        $statistik['totalPembayaranMasuk'] = $pembayaranModel
+            ->where('status_pembayaran', 'Lunas')
+            ->selectSum('total_tagihan')
+            ->first()['total_tagihan'] ?? 0;
+
+        // Total Pesanan Selesai (yang sudah ada link_drive-nya)
+        $statistik['totalPesananSelesai'] = $pesananModel
+            ->where('link_drive IS NOT NULL', null, false)
+            ->countAllResults();
+
+        $statistik['totalPesananBulanIni'] = $pesananModel
+            ->where('MONTH(tanggal_pesan)', date('m'))
+            ->where('YEAR(tanggal_pesan)', date('Y'))
+            ->countAllResults();
+
+        // Aktivitas terbaru: hanya "Menunggu Konfirmasi", maksimal 10
+        $aktivitasTerbaruRaw = $pesananModel
+            ->where('status_pesanan', 'Menunggu Konfirmasi')
+            ->orderBy('tanggal_pesan', 'DESC')
+            ->findAll(10);
+
+        $aktivitasTerbaru = [];
+        foreach ($aktivitasTerbaruRaw as $row) {
+            $aktivitasTerbaru[] = [
+                'id' => $row['id'],
+                'klien' => $row['nama_lengkap'],
+                'jam' => date('H:i:s', strtotime($row['tanggal_pesan'])),
+                'status' => $row['status_pesanan']
+            ];
+        }
+
+        // Grafik pesanan 7 hari terakhir
+        $grafikData = $pesananModel->getStatistik7Hari();
+        $labels = [];
+        $data = [];
+
+        // Inisialisasi tanggal 7 hari
+        for ($i = 6; $i >= 0; $i--) {
+            $tanggal = date('Y-m-d', strtotime("-$i days"));
+            $labels[] = date('d M', strtotime($tanggal));
+            $data[$tanggal] = 0;
+        }
+
+        // Gabungkan data hasil query
+        foreach ($grafikData as $row) {
+            $data[$row['tanggal']] = $row['jumlah'];
+        }
+
+        $grafikPesanan = [
+            'labels' => array_values($labels),
+            'data' => array_values($data)
+        ];
+
+        // Status pesanan (pie chart)
+        $statusData = $pesananModel->getStatusPesanan();
+        $statusPesanan = [
+            'labels' => [],
+            'data' => []
+        ];
+        foreach ($statusData as $s) {
+            $statusPesanan['labels'][] = $s['status_pesanan'];
+            $statusPesanan['data'][] = $s['jumlah'];
+        }
+
+        return view('/admin/dashboard', [
+            'statistik' => $statistik,
+            'aktivitasTerbaru' => $aktivitasTerbaru,
+            'grafikPesanan' => $grafikPesanan,
+            'statusPesanan' => $statusPesanan
+        ]);
+    }
 }

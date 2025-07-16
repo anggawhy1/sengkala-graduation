@@ -20,7 +20,7 @@
                     onclick="toggleDropdown('opmDropdown', 'opmIcon')"
                     class="w-full flex items-center justify-between px-4 py-2 rounded hover:bg-[#4A493F] focus:outline-none">
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-briefcase"></i> <span>OPM</span>
+                        <i class="fas fa-briefcase"></i> <span>MANAGE</span>
                     </div>
                     <i id="opmIcon" class="fas fa-chevron-right transition-transform duration-200"></i>
                 </button>
@@ -42,30 +42,15 @@
                 </div>
 
             </div>
-            <!-- <a href="/admin/pesanan" class="flex items-center gap-3 px-4 py-2 rounded hover:bg-[#4A493F]">
-                <i class="fas fa-clipboard-list"></i> <span>PESANAN</span>
-            </a> -->
             <a href="/admin/fotografer" class="flex items-center gap-3 px-4 py-2 rounded hover:bg-[#4A493F]">
                 <i class="fas fa-camera-retro"></i> <span>FOTOGRAFER</span>
+            </a>
+            <a href="/admin/katalog" class="flex items-center gap-3 px-4 py-2 rounded hover:bg-[#4A493F]">
+                <i class="fas fa-folder-open"></i> <span>KATALOG</span>
             </a>
             <a href="/admin/jadwal" class="flex items-center gap-3 px-4 py-2 rounded hover:bg-[#4A493F]">
                 <i class="fas fa-calendar-alt"></i> <span>JADWAL & SLOT</span>
             </a>
-            <!-- <a href="/admin/galeri" class="flex items-center gap-3 px-4 py-2 rounded hover:bg-[#4A493F]">
-                <i class="fas fa-images"></i> <span>GALERI & KATALOG</span>
-            </a> -->
-            <!-- <a href="/admin/pembayaran" class="flex items-center gap-3 px-4 py-2 rounded hover:bg-[#4A493F]">
-                <i class="fas fa-money-bill-wave"></i> <span>PEMBAYARAN</span>
-            </a> -->
-            <!-- <a href="/admin/laporan" class="flex items-center gap-3 px-4 py-2 rounded hover:bg-[#4A493F]">
-                <i class="fas fa-chart-line"></i> <span>LAPORAN</span>
-            </a> -->
-            <!-- <a href="/admin/pesan-masuk" class="flex items-center gap-3 px-4 py-2 rounded hover:bg-[#4A493F]">
-                <i class="fas fa-envelope"></i> <span>PESAN MASUK</span>
-            </a> -->
-            <!-- <a href="/admin/pengaturan" class="flex items-center gap-3 px-4 py-2 rounded hover:bg-[#4A493F]">
-                <i class="fas fa-cogs"></i> <span>PENGATURAN</span>
-            </a> -->
             <button onclick="openLogoutModal()"
                 class="flex items-center gap-3 px-4 py-2 rounded hover:bg-[#4A493F]">
                 <i class="fas fa-sign-out-alt"></i> <span>KELUAR</span>
@@ -157,7 +142,6 @@
             }
         </script>
 
-        <!-- Tambahkan di akhir halaman sebelum </body> -->
         <script>
             function toggleDropdown(menuId, iconId) {
                 const menu = document.getElementById(menuId);

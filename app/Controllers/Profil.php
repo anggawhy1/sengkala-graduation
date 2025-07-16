@@ -1,36 +1,46 @@
 <?php
 
 namespace App\Controllers;
+use App\Models\AdminModel;
 
 class Profil extends BaseController
 {
     public function index()
     {
-        $data['user'] = [
-            'nama' => 'Angga Mahendra',
-            'username' => 'anggakode',
-            'email' => 'angga@mail.com',
-            'nohp' => '089567812345',
-            'foto' => 'default.png',
-        ];
+        $adminModel = new AdminModel();
+        $adminId = session()->get('admin_id');
 
-        return view('profil', $data);
+        $data['user'] = $adminModel->find($adminId);
+        return view('admin/profil', $data); // Pastikan path view benar
     }
 
     public function update()
     {
-        $foto = $this->request->getFile('foto');
-        $namaFoto = 'default.png';
+        $adminModel = new AdminModel();
+        $id = session()->get('admin_id');
 
-        if ($foto && $foto->isValid() && !$foto->hasMoved()) {
-            $namaFoto = $foto->getRandomName();
-            $foto->move('uploads/', $namaFoto);
+        $data = [
+            'nama_lengkap' => $this->request->getPost('nama_lengkap'),
+            'username'     => $this->request->getPost('username'),
+            'email'        => $this->request->getPost('email'),
+            'no_hp'     => $this->request->getPost('no_hp'),
+        ];
+
+        $password = $this->request->getPost('password');
+        if (!empty($password)) {
+            $data['password'] = password_hash($password, PASSWORD_DEFAULT);
         }
 
-        // Contoh update ke database (disini dummy aja)
-        // $model->update($id_user, [...]);
+        $foto = $this->request->getFile('foto');
+        if ($foto && $foto->isValid() && !$foto->hasMoved()) {
+            $fotoName = $foto->getRandomName();
+            $foto->move('uploads', $fotoName);
+            $data['foto'] = $fotoName;
+        }
 
-        session()->setFlashdata('success', 'Profil berhasil diperbarui.');
-        return redirect()->to(base_url('profil'));
+        $adminModel->update($id, $data);
+
+        session()->set('admin', $adminModel->find($id));
+        return redirect()->to('admin/profil')->with('success', 'Profil berhasil diperbarui!');
     }
 }

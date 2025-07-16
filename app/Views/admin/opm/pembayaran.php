@@ -11,7 +11,7 @@
         <form action="/admin/opm/pembayaran" method="get" class="flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-2">
                 <label for="tanggal" class="font-semibold">Pilih Tanggal:</label>
-                <input type="date" name="tanggal" id="tanggal" value="<?= $_GET['tanggal'] ?? date('Y-m-d') ?>" class="border border-gray-300 rounded px-2 py-1">
+                <input type="date" name="tanggal" id="tanggal" value="<?= $_GET['tanggal'] ?? '' ?>" class="border border-gray-300 rounded px-2 py-1">
                 <button type="submit" class="bg-black text-white px-4 py-1 rounded hover:bg-gray-800">Lihat</button>
             </div>
 
@@ -28,70 +28,79 @@
 
         <!-- Table -->
         <div class="overflow-x-auto">
-            <table class="min-w-full border border-gray-300 text-sm">
-                <thead class="bg-gray-100 text-gray-700">
-                    <tr>
-                        <th class="p-2 border">No.</th>
-                        <th class="p-2 border">Tanggal Konfirmasi</th>
-                        <th class="p-2 border">ID/Nama Klien</th>
-                        <th class="p-2 border">Paket</th>
-                        <th class="p-2 border">Total</th>
-                        <th class="p-2 border">Sisa Pembayaran</th>
-                        <th class="p-2 border">Metode Pembayaran</th>
-                        <th class="p-2 border">Bukti</th>
-                        <th class="p-2 border">Status</th>
-                        <th class="p-2 border">Aksi</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <?php foreach ($pembayaran as $index => $row): ?>
-                        <tr class="border-t hover:bg-gray-50">
-                            <td class="p-2 border"><?= $index + 1 ?></td>
-                            <td class="p-2 border"><?= $row['tanggal_konfirmasi'] ?? '-' ?></td>
-                            <td class="p-2 border">
-                                <span class="text-blue-600 underline cursor-pointer" onclick="showDetail(<?= htmlspecialchars(json_encode($row)) ?>)">
-                                    <?= $row['id'] ?>
-                                </span><br>
-                                <?= $row['nama_klien'] ?>
-                            </td>
-                            <td class="p-2 border"><?= $row['paket'] ?></td>
-                            <td class="p-2 border">Rp. <?= number_format($row['total'], 0, ',', '.') ?></td>
-                            <td class="p-2 border">
-                                Rp. <?= number_format(
-                                        ($row['status'] == 'Belum Bayar' || $row['status'] == 'Belum Lunas') ? ($row['sisa'] ?? $row['total']) : 0,
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) ?>
-                            </td>
-                            <td class="p-2 border"><?= $row['metode'] ?></td>
-                            <td class="p-2 border">
-                                <a href="/path/to/bukti/<?= $row['bukti'] ?>" target="_blank" class="text-blue-500 underline">Lihat</a>
-                            </td>
-                            <td class="p-2 border min-w-[120px]">
-                                <span class="px-2 py-1 rounded text-white text-xs
-    <?= $row['status'] == 'Belum Bayar' ? 'bg-yellow-500' : ($row['status'] == 'Lunas' ? 'bg-green-600' : ($row['status'] == 'Ditolak' ? 'bg-red-500' : ($row['status'] == 'Belum Lunas' ? 'bg-blue-600' : 'bg-gray-400'))) ?>">
-                                    <?= $row['status'] ?>
-                                </span>
-                            </td>
-
-                            <td class="p-2 border">
-                                <form action="/admin/opm/pembayaran/update/<?= $row['id'] ?>" method="POST" class="flex items-center gap-2">
-                                    <select name="status" class="border rounded px-2 py-1 text-xs">
-                                        <option <?= $row['status'] == 'Belum Bayar' ? 'selected' : '' ?>>Belum Bayar</option>
-                                        <option <?= $row['status'] == 'Belum Lunas' ? 'selected' : '' ?>>Belum Lunas</option>
-                                        <option <?= $row['status'] == 'Lunas' ? 'selected' : '' ?>>Lunas</option>
-                                        <option <?= $row['status'] == 'Ditolak' ? 'selected' : '' ?>>Ditolak</option>
-                                    </select>
-                                    <button type="submit" class="bg-black text-white text-xs px-2 py-1 rounded">Simpan</button>
-                                </form>
-                            </td>
+            <?php if (empty($pembayaran)): ?>
+                <div class="text-center text-gray-500 italic py-4">
+                    Tidak ada data pembayaran.
+                </div>
+            <?php else: ?>
+                <table class="min-w-full border border-gray-300 text-sm">
+                    <thead class="bg-gray-100 text-gray-700">
+                        <tr>
+                            <th class="p-2 border">No.</th>
+                            <th class="p-2 border">Tanggal Konfirmasi</th>
+                            <th class="p-2 border">ID/Nama Klien</th>
+                            <th class="p-2 border">Paket</th>
+                            <th class="p-2 border">Total</th>
+                            <th class="p-2 border">Sisa Pembayaran</th>
+                            <th class="p-2 border">Metode Pembayaran</th>
+                            <th class="p-2 border">Bukti</th>
+                            <th class="p-2 border">Status</th>
+                            <th class="p-2 border">Aksi</th>
                         </tr>
-                    <?php endforeach ?>
-                </tbody>
+                    </thead>
 
-            </table>
+                    <tbody>
+                        <?php foreach ($pembayaran as $index => $row): ?>
+                            <tr class="border-t hover:bg-gray-50">
+                                <td class="p-2 border"><?= $index + 1 ?></td>
+                                <td class="p-2 border"><?= $row['tanggal_konfirmasi'] ?? '-' ?></td>
+                                <td class="p-2 border">
+                                    <span class="text-blue-600 underline cursor-pointer" onclick="showDetail(<?= htmlspecialchars(json_encode($row)) ?>)">
+                                        <?= $row['pesanan_id'] ?>
+                                    </span>
+                                    <?= $row['nama_klien'] ?>
+                                </td>
+                                <td class="p-2 border"><?= $row['paket'] ?></td>
+                                <td class="p-2 border">Rp. <?= number_format($row['total'], 0, ',', '.') ?></td>
+                                <td class="p-2 border">
+                                    Rp. <?= number_format(
+                                            ($row['status'] == 'Belum Bayar' || $row['status'] == 'Belum Lunas') ? ($row['sisa'] ?? $row['total']) : 0,
+                                            0,
+                                            ',',
+                                            '.'
+                                        ) ?>
+                                </td>
+                                <td class="p-2 border"><?= $row['metode'] ?></td>
+                                <td class="p-2 border">
+                                    <?php if (!empty($row['bukti']) && $row['bukti'] !== '-'): ?>
+                                        <a href="/uploads/bukti/<?= $row['bukti'] ?>" target="_blank">Lihat</a>
+                                    <?php else: ?>
+                                        <span class="text-gray-400 italic">Belum Upload</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="p-2 border min-w-[120px]">
+                                    <span class="px-2 py-1 rounded text-white text-xs
+                                        <?= $row['status'] == 'Belum Bayar' ? 'bg-yellow-500' : ($row['status'] == 'Lunas' ? 'bg-green-600' : ($row['status'] == 'Ditolak' ? 'bg-red-500' : ($row['status'] == 'Belum Lunas' ? 'bg-blue-600' : 'bg-gray-400'))) ?>">
+                                        <?= $row['status'] ?>
+                                    </span>
+                                </td>
+
+                                <td class="p-2 border">
+                                    <form action="/admin/opm/pembayaran/update/<?= $row['id_pembayaran'] ?>" method="POST" class="flex items-center gap-2">
+                                        <select name="status" class="border rounded px-2 py-1 text-xs">
+                                            <option <?= $row['status'] == 'Belum Bayar' ? 'selected' : '' ?>>Belum Bayar</option>
+                                            <option <?= $row['status'] == 'Belum Lunas' ? 'selected' : '' ?>>Belum Lunas</option>
+                                            <option <?= $row['status'] == 'Lunas' ? 'selected' : '' ?>>Lunas</option>
+                                            <option <?= $row['status'] == 'Ditolak' ? 'selected' : '' ?>>Ditolak</option>
+                                        </select>
+                                        <button type="submit" class="bg-black text-white text-xs px-2 py-1 rounded">Simpan</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach ?>
+                    <?php endif; ?>
+                    </tbody>
+                </table>
         </div>
 
         <!-- Dummy Pagination -->
@@ -129,31 +138,35 @@
         const grandTotal = document.getElementById('grandTotal');
 
         detail.innerHTML = `
-      <div><strong>ID Pesanan</strong></div><div>: ${data.id}</div>
-      <div><strong>Nama Pemesan</strong></div><div>: ${data.nama_klien}</div>
-      <div><strong>Paket</strong></div><div>: ${data.paket}</div>
-      <div><strong>Tanggal Pemesanan</strong></div><div>: ${data.tanggal_pesan}</div>
-      <div><strong>Tanggal Sesi Foto</strong></div><div>: ${data.tanggal_sesi}</div>
-      <div><strong>Lokasi Sesi</strong></div><div>: ${data.lokasi}</div>
-      <div><strong>Status Pembayaran</strong></div><div>: ${data.status}</div>
-      <div><strong>Tanggal Konfirmasi</strong></div><div>: ${data.tanggal_konfirmasi || '-'}</div>
-      <div><strong>Sisa Pembayaran</strong></div><div>: Rp. ${parseInt((data.sisa ?? (data.status == 'Lunas' ? 0 : data.total))).toLocaleString('id-ID')},-</div>
-      <div><strong>Additional</strong></div><div>: ${data.additional || '-'}</div>
-      <div><strong>Bukti Transfer</strong></div><div>: <a href="/path/to/bukti/${data.bukti}" target="_blank" class="text-blue-600 underline">Lihat Bukti</a></div>
-    `;
+            <div><strong>ID Pembayaran</strong></div><div>: ${data.id_pembayaran}</div>
+            <div><strong>ID Pesanan</strong></div><div>: ${data.id}</div>
+            <div><strong>Nama Pemesan</strong></div><div>: ${data.nama_klien}</div>
+            <div><strong>Paket</strong></div><div>: ${data.paket}</div>
+            <div><strong>Tanggal Pemesanan</strong></div><div>: ${data.tanggal_pesan}</div>
+            <div><strong>Tanggal Sesi Foto</strong></div><div>: ${data.tanggal_sesi}</div>
+            <div><strong>Lokasi Sesi</strong></div><div>: ${data.lokasi}</div>
+            <div><strong>Status Pembayaran</strong></div><div>: ${data.status}</div>
+            <div><strong>Tanggal Konfirmasi</strong></div><div>: ${data.tanggal_konfirmasi || '-'}</div>
+            <div><strong>Sisa Pembayaran</strong></div><div>: Rp. ${parseInt(data.sisa).toLocaleString('id-ID')},-</div>
+            <div><strong>Additional</strong></div><div>: ${data.additional || '-'}</div>
+            <div><strong>Bukti Transfer</strong></div><div>: ${
+                data.bukti && data.bukti !== '-'
+                    ? `<a href="/uploads/bukti/${data.bukti}" target="_blank" class="text-blue-600 underline">Lihat Bukti</a>`
+                    : `<span class="text-gray-400 italic">Belum Upload</span>`
+            }</div>
+        `;
 
         itemTotal.innerHTML = `
-      <div class="flex justify-between">
-        <span>Couple ${data.paket} Package</span>
-        <span>Rp. ${parseInt(data.total).toLocaleString('id-ID')},-</span>
-      </div>
-      ${data.additional && data.additional !== '-' ? `<div class="flex justify-between"><span>Additional</span><span>Termasuk</span></div>` : ''}
-    `;
+            <div class="flex justify-between">
+                <span>${data.paket} Package</span>
+                <span>Rp. ${parseInt(data.total).toLocaleString('id-ID')},-</span>
+            </div>
+        `;
 
         grandTotal.innerHTML = `
-      <span>Total</span>
-      <span>Rp. ${parseInt(data.total).toLocaleString('id-ID')},-</span>
-    `;
+            <span>Total</span>
+            <span>Rp. ${parseInt(data.total).toLocaleString('id-ID')},-</span>
+        `;
 
         modal.classList.remove('hidden');
         modal.classList.add('flex');

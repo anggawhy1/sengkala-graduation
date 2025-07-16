@@ -14,7 +14,7 @@
             <!-- Filter Tanggal -->
             <form action="/admin/opm/pesanan" method="get" class="flex items-center gap-2">
                 <label for="tanggal" class="text-sm font-medium text-gray-700">Pilih Tanggal:</label>
-                <input type="date" name="tanggal" id="tanggal" value="<?= $_GET['tanggal'] ?? date('Y-m-d') ?>" class="border border-gray-300 rounded px-2 py-1 text-sm">
+                <input type="date" name="tanggal" id="tanggal" value="<?= $_GET['tanggal'] ?? '' ?>" class="border border-gray-300 rounded px-2 py-1 text-sm">
                 <button type="submit" class="bg-black text-white px-4 py-1 text-sm rounded hover:bg-gray-800">Lihat</button>
             </form>
 
@@ -67,9 +67,11 @@
                         </div>
 
                         <!-- Tombol Aksi -->
-                        <a href="/admin/opm/pesanan/detail/<?= esc($p['id']) ?>" class="inline-block bg-black text-white px-4 py-2 text-sm rounded hover:bg-gray-800 transition">
+                        <a href="/admin/opm/pesanan/detail/<?= esc($p['id']) ?>"
+                            class="inline-block bg-black text-white px-4 py-2 text-sm rounded hover:bg-gray-800 transition">
                             Lihat Selengkapnya
                         </a>
+
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>

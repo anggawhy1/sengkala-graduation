@@ -2,47 +2,23 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
+use App\Models\PesananModel;
 
 class Notifikasi extends BaseController
 {
     public function index()
     {
-        // Dummy data dikelompokkan per tanggal
-        $data['notifikasi'] = [
-            'Hari Ini' => [
-                [
-                    'waktu' => '14.30 WIB',
-                    'nama' => 'Nabilaaa',
-                    'aktivitas' => 'Melakukan Pemesanan Paket Couple A'
-                ],
-                [
-                    'waktu' => '09.30 WIB',
-                    'nama' => 'Nabilaaa',
-                    'aktivitas' => 'Melakukan Pemesanan Paket Couple A'
-                ],
-            ],
-            'Kemarin' => [
-                [
-                    'waktu' => '14.30 WIB',
-                    'nama' => 'Nabilaaa',
-                    'aktivitas' => 'Melakukan Pemesanan Paket Couple A'
-                ],
-                [
-                    'waktu' => '09.30 WIB',
-                    'nama' => 'Nabilaaa',
-                    'aktivitas' => 'Melakukan Pemesanan Paket Couple A'
-                ],
-            ],
-            '09 Oktober 2025' => [
-                [
-                    'waktu' => '14.30 WIB',
-                    'nama' => 'Nabilaaa',
-                    'aktivitas' => 'Melakukan Pemesanan Paket Couple A'
-                ],
-            ],
-        ];
+        $pesananModel = new PesananModel();
+        $data['notifikasi'] = $pesananModel->getNotifikasiPesananBaru();
 
-        return view('notifikasi', $data);
+        return view('admin/notifikasi', $data);
+    }
+
+    public function tandaiSemuaSudahDibaca()
+    {
+        $pesananModel = new PesananModel();
+        $pesananModel->tandaiSemuaSudahDibaca();
+
+        return redirect()->to('/admin/notifikasi');
     }
 }

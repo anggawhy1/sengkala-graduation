@@ -30,29 +30,29 @@
 
     <!-- Kolom 1 -->
     <div class="flex flex-col gap-4">
-      <img src="<?= base_url('images/foto1.png') ?>" alt="foto1" class="rounded-md shadow-md">
+      <img src="<?= base_url('images/bagian6.png') ?>" alt="foto1" class="rounded-md shadow-md">
       <img src="<?= base_url('images/foto4.png') ?>" alt="foto4" class="rounded-md shadow-md">
-      <img src="<?= base_url('images/foto7.png') ?>" alt="foto7" class="rounded-md shadow-md">
+      <img src="<?= base_url('images/bagian8.png') ?>" alt="foto7" class="rounded-md shadow-md">
     </div>
 
     <!-- Kolom 2 -->
     <div class="flex flex-col gap-4">
-      <img src="<?= base_url('images/foto2.png') ?>" alt="foto2" class="rounded-md shadow-md">
+      <img src="<?= base_url('images/bagian2.png') ?>" alt="foto2" class="rounded-md shadow-md">
       <img src="<?= base_url('images/foto5.png') ?>" alt="foto5" class="rounded-md shadow-md">
-      <img src="<?= base_url('images/foto8.png') ?>" alt="foto8" class="rounded-md shadow-md">
+      <img src="<?= base_url('images/bagian7.png') ?>" alt="foto8" class="rounded-md shadow-md">
     </div>
 
     <!-- Kolom 3 -->
     <div class="flex flex-col gap-4">
-      <img src="<?= base_url('images/foto3.png') ?>" alt="foto3" class="rounded-md shadow-md">
+      <img src="<?= base_url('images/foto7.png') ?>" alt="foto3" class="rounded-md shadow-md">
       <img src="<?= base_url('images/foto6.png') ?>" alt="foto6" class="rounded-md shadow-md">
-      <img src="<?= base_url('images/foto9.png') ?>" alt="foto9" class="rounded-md shadow-md">
+      <img src="<?= base_url('images/bagian1.png') ?>" alt="foto9" class="rounded-md shadow-md">
     </div>
   </div>
 </section>
 
 <!-- Call to Action Section -->
-<section class="bg-cover bg-center relative text-white py-16 px-6 md:px-20" style="background-image: url('<?= base_url("images/cta.png") ?>');">
+<section class="bg-cover bg-center relative text-white py-16 px-6 md:px-20" style="background-image: url('<?= base_url("images/footer.png") ?>');">
   <!-- Overlay -->
   <div class="absolute inset-0 bg-black bg-opacity-60 z-0"></div>
 

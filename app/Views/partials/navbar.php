@@ -47,7 +47,7 @@
       <li><a href="tentang" class="block py-2 hover:text-yellow-400">Tentang</a></li>
       <li><a href="hubungi" class="block py-2 hover:text-yellow-400">Hubungi Kami</a></li>
       <li>
-        <a href="login" class="block py-2 text-[#4e4a3f] bg-yellow-400 rounded-full text-center mt-2 hover:bg-yellow-300 transition">
+        <a href="<?= base_url('login') ?>" class="block py-2 text-[#4e4a3f] bg-yellow-400 rounded-full text-center mt-2 hover:bg-yellow-300 transition">
           Login
         </a>
       </li>

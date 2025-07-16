@@ -2,7 +2,7 @@
 
 <?= $this->section('content') ?>
 <!-- Hero Section -->
-<section class="relative h-screen bg-cover bg-center" style="background-image: url('<?= base_url('images/hero1.png') ?>');">
+<section class="relative h-screen bg-cover bg-center" style="background-image: url('<?= base_url('images/beranda1.jpg') ?>');">
   <div class="absolute inset-0 bg-black opacity-40"></div>
   <div class="relative z-10 flex flex-col justify-center items-start h-full px-10 md:px-20 text-white">
     <!-- Tambahkan logo di sini -->
@@ -58,16 +58,16 @@
     <div class="swiper-wrapper">
       <?php
       $universitas = [
-        'Universitas Gadjah Mada',
-        'Universitas Negeri Yogyakarta',
-        'Universitas Islam Indonesia',
-        'Universitas Ahmad Dahlan',
-        'Universitas Muhammadiyah Yogyakarta',
         'Universitas Alma Ata',
+        'Universitas Muhammadiyah Yogyakarta',
+        'Universitas Sarjanawiyata Tamansiswa',
+        'Institut Agama Islam Annawawi',
+        'Universitas Aisyiyah Yogyakarta',
+        'Universitas ',
         'Universitas Sanata Dharma',
-        'Universitas Atma Jaya Yogyakarta',
-        'Universitas Teknologi Yogyakarta',
-        'Universitas AMIKOM Yogyakarta'
+        'Universitas Muhammadiyah Yogyakarta',
+        'Universitas Aisyiyah Yogyakarta',
+        'Universitas Jenderal Soedirman'
       ];
       for ($i = 1; $i <= 10; $i++): ?>
         <div class="swiper-slide">
@@ -149,7 +149,7 @@
         <?php for ($i = 1; $i <= 5; $i++): ?>
           <div class="swiper-slide">
             <div class="min-w-[250px] bg-cover bg-center rounded-xl relative overflow-hidden shadow-lg"
-              style="background-image: url('<?= base_url("images/foto{$i}.png") ?>'); height: 350px;">
+              style="background-image: url('<?= base_url("images/bagian{$i}.png") ?>'); height: 350px;">
 
               <!-- Overlay gelap -->
               <div class="absolute inset-0 bg-black bg-opacity-55 rounded-xl"></div>
@@ -159,7 +159,7 @@
                 <!-- Title di tengah -->
                 <div class="flex-1 flex items-center justify-center">
                   <div class="font-bold text-2xl md:text-3xl leading-snug">
-                    <?= $i === 1 ? 'Personal' : ($i === 2 ? 'Group' : ($i === 3 ? 'Couple' : ($i === 4 ? 'Family' : 'Additional'))) ?><br>Package
+                    <?= $i === 1 ? 'Personal' : ($i === 2 ? 'Group' : ($i === 3 ? 'Couple' : ($i === 4 ? 'Bundling' : 'Additional'))) ?><br>Package
                   </div>
                 </div>
 
@@ -209,7 +209,7 @@
 </script>
 
 <!-- Tentang Kami -->
-<section class="relative bg-cover bg-center bg-no-repeat py-20 px-6 md:px-20 text-white" style="background-image: url('<?= base_url("images/tentang.png") ?>');">
+<section class="relative bg-cover bg-center bg-no-repeat py-20 px-6 md:px-20 text-white" style="background-image: url('<?= base_url("images/tentang1.png") ?>');">
   <div class="absolute inset-0 bg-black bg-opacity-60"></div>
   <div class="relative z-10 max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
 
@@ -285,7 +285,7 @@
 
 
 <!-- Call to Action Section -->
-<section class="bg-cover bg-center relative text-white py-16 px-6 md:px-20" style="background-image: url('<?= base_url("images/cta.png") ?>');">
+<section class="bg-cover bg-center relative text-white py-16 px-6 md:px-20" style="background-image: url('<?= base_url("images/footer.png") ?>');">
   <!-- Overlay -->
   <div class="absolute inset-0 bg-black bg-opacity-60 z-0"></div>
 

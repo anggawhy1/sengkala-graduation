@@ -34,6 +34,12 @@
             font-family: 'Nunito', sans-serif;
         }
     </style>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+
 </head>
 
 <body class="bg-white font-nunito">

@@ -13,12 +13,21 @@
       <p class="text-sm text-gray-600">Halaman ini hanya dapat diakses oleh admin</p>
     </div>
 
-    <form action="#" method="POST" class="space-y-4">
+    <!-- Flash Message -->
+    <?php if (session()->getFlashdata('error')) : ?>
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded text-sm">
+        <?= session()->getFlashdata('error') ?>
+      </div>
+    <?php endif; ?>
+
+    <form action="<?= base_url('login/proses') ?>" method="POST" class="space-y-4">
       <!-- Username -->
       <div class="relative">
         <input
+          name="username"
           type="text"
           placeholder="Username"
+          required
           class="w-full px-10 py-3 rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-inner" />
         <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
       </div>
@@ -26,9 +35,11 @@
       <!-- Password -->
       <div class="relative">
         <input
+          name="password"
           id="password"
           type="password"
           placeholder="Password"
+          required
           class="w-full px-10 py-3 rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-inner" />
         <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
         <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none">

@@ -2,70 +2,113 @@
 
 namespace App\Controllers;
 
+use App\Models\PembayaranModel;
+use App\Models\PesananModel;
+use App\Models\PaketModel;
+
 class Pembayaran extends BaseController
 {
-    private $dummyData = [
-        [
-            'id' => 'PP001',
-            'nama_klien' => 'Adinda Kusuma',
-            'paket' => 'Couple A',
-            'metode' => 'Transfer',
-            'status' => 'Belum Bayar',
-            'bukti' => 'bukti1.jpg',
-            'tanggal_pesan' => '07 Agustus 2025',
-            'tanggal_sesi' => '19 September 2025',
-            'lokasi' => 'Taman Kulon Progo',
-            'total' => '375000',
-            'sisa' => '375000',
-            'tanggal_konfirmasi' => '-',
-            'additional' => '-'
-        ],
-        [
-            'id' => 'PP002',
-            'nama_klien' => 'Andi Rizki',
-            'paket' => 'Couple B',
-            'metode' => 'DP',
-            'status' => 'Belum Lunas',
-            'bukti' => 'bukti2.jpg',
-            'tanggal_pesan' => '10 Agustus 2025',
-            'tanggal_sesi' => '22 September 2025',
-            'lokasi' => 'UNY',
-            'total' => '400000',
-            'sisa' => '200000',
-            'tanggal_konfirmasi' => '12 Agustus 2025',
-            'additional' => 'Makeup'
-        ],
-        // tambahkan juga untuk PP003 dan PP004
-    ];
-
     public function index()
     {
-        $data['pembayaran'] = $this->dummyData;
-        return view('admin/opm/pembayaran', $data);
+        $pembayaranModel = new PembayaranModel();
+        $pesananModel = new PesananModel();
+        $paketModel = new PaketModel();
+
+        $tanggal = $this->request->getGet('tanggal');
+        $rows = $tanggal
+            ? $pembayaranModel
+            ->where('tanggal_konfirmasi', $tanggal)
+            ->where('status_pembayaran !=', 'Lunas')
+            ->orderBy('id')
+            ->findAll()
+            : $pembayaranModel
+            ->where('status_pembayaran !=', 'Lunas')
+            ->orderBy('id')
+            ->findAll();
+
+        foreach ($rows as &$r) {
+            $p = (new PesananModel())->find($r['pesanan_id']);
+            $paket = (new \App\Models\PaketModel())->find($p['paket_id'] ?? null);
+
+            $r['id_pembayaran'] = $r['id'];
+            $r['id'] = $p['id'] ?? '-';
+
+            $r['nama_klien'] = $p['nama_lengkap'] ?? '-';
+            $r['paket'] = $paket['nama_paket'] ?? '-';
+            $r['lokasi'] = $p['lokasi'] ?? '-';
+            $r['total'] = $r['total_tagihan'];
+            $r['sisa']  = $r['sisa_tagihan'];
+            $r['metode'] = $p['metode_pembayaran'] ?? '-';
+            $r['bukti'] = (!empty($r['bukti_pembayaran'])) ? $r['bukti_pembayaran'] : '-';
+            $r['status'] = $r['status_pembayaran'];
+            $r['tanggal_pesan'] = isset($p['tanggal_pesan']) ? date('Y-m-d', strtotime($p['tanggal_pesan'])) : '-';
+            $r['tanggal_sesi'] = isset($p['tanggal_sesi']) ? date('Y-m-d', strtotime($p['tanggal_sesi'])) : '-';
+            $r['tanggal_konfirmasi'] = isset($r['tanggal_konfirmasi']) ? date('Y-m-d', strtotime($r['tanggal_konfirmasi'])) : '-';
+            $r['additional'] = $p['keterangan'] ?? '-';
+        }
+
+
+        return view('admin/opm/pembayaran', ['pembayaran' => $rows]);
     }
 
     public function detail($id)
     {
-        $detail = null;
-        foreach ($this->dummyData as $row) {
-            if ($row['id'] == $id) {
-                $detail = $row;
-                break;
-            }
-        }
+        $pembayaranModel = new PembayaranModel();
+        $pesananModel = new PesananModel();
+        $paketModel = new PaketModel();
 
-        if (!$detail) {
+        $r = $pembayaranModel->find($id);
+        if (!$r) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
-        $data['detail'] = $detail;
-        return view('admin/opm/detail_pembayaran', $data);
+        $pesanan = $pesananModel->find($r['pesanan_id']);
+        $paket = $pesanan ? $paketModel->find($pesanan['paket_id']) : null;
+
+        $r['kode_pesanan'] = $pesanan['id'] ?? '-'; // default: id angka (lama)
+        if (isset($pesanan['kode_pesanan'])) {
+            $r['kode_pesanan'] = $pesanan['kode_pesanan'];
+        }
+
+        $r['nama_klien'] = $pesanan['nama_lengkap'] ?? '-';
+        $r['metode'] = $pesanan['metode_pembayaran'] ?? '-';
+        $r['tanggal_pesan'] = $pesanan['tanggal_pesan'] ?? '-';
+        $r['tanggal_sesi'] = $pesanan['tanggal_sesi'] ?? '-';
+        $r['lokasi'] = $pesanan['lokasi'] ?? '-';
+        $r['paket'] = $paket['nama_paket'] ?? 'Paket Tidak Diketahui';
+        $r['additional'] = $pesanan['additional'] ?? '-';
+        $r['status'] = $r['status_pembayaran'] ?? 'Belum Bayar';
+        $r['total'] = $r['total_tagihan'] ?? 0;
+        $r['sisa'] = $r['sisa_tagihan'] ?? 0;
+        $r['bukti'] = $r['bukti_pembayaran'] ?? '-';
+
+        return view('admin/opm/detail_pembayaran', ['detail' => $r]);
     }
+
 
     public function updateStatus($id)
     {
-        $status = $this->request->getPost('status');
-        // Simulasi update status
-        return redirect()->to("/admin/opm/pembayaran/$id")->with('message', 'Status berhasil diubah ke ' . $status);
+        $statusBaru = $this->request->getPost('status');
+        $pembayaranModel = new PembayaranModel();
+        $pesananModel = new PesananModel();
+
+        $pembayaran = $pembayaranModel->find($id);
+        if (!$pembayaran) {
+            return redirect()->back()->with('error', 'Data pembayaran tidak ditemukan.');
+        }
+
+        // Update status pembayaran
+        $pembayaranModel->update($id, [
+            'status_pembayaran' => $statusBaru
+        ]);
+
+        // Jika status pembayaran menjadi 'Lunas', update status pesanan ke 'Aktif'
+        if ($statusBaru === 'Lunas') {
+            $pesananModel->update($pembayaran['pesanan_id'], [
+                'status_pesanan' => 'Aktif'
+            ]);
+        }
+
+        return redirect()->to('/admin/opm/pembayaran')->with('success', 'Status pembayaran berhasil diperbarui.');
     }
 }

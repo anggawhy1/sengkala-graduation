@@ -46,7 +46,7 @@
 
 
 <!-- Call to Action Section -->
-<section class="bg-cover bg-center relative text-white py-16 px-6 md:px-20" style="background-image: url('<?= base_url("images/cta.png") ?>');">
+<section class="bg-cover bg-center relative text-white py-16 px-6 md:px-20" style="background-image: url('<?= base_url("images/footer.png") ?>');">
   <!-- Overlay -->
   <div class="absolute inset-0 bg-black bg-opacity-60 z-0"></div>
 

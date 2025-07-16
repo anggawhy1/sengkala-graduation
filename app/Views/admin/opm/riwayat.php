@@ -1,97 +1,63 @@
 <?= $this->extend('layout/main2') ?>
 <?= $this->section('content') ?>
 
-<section class="p-6 space-y-6">
-    <h1 class="text-2xl font-semibold text-gray-800">RIWAYAT PESANAN</h1>
+<div class="p-6 space-y-6">
+    <h2 class="text-2xl font-bold text-gray-700">RIWAYAT PESANAN</h2>
 
-    <!-- Kotak Gabungan Filter + Tabel -->
-    <div class="bg-white rounded shadow-md p-4 text-sm space-y-4">
-
-        <!-- Filter + Show Entries -->
-        <div class="flex flex-wrap justify-between items-center gap-4 text-sm mt-4">
-
-            <!-- Form Filter -->
-            <form action="" method="get" class="flex flex-wrap gap-2 items-center">
-                <input type="text" name="search" placeholder="ID / Nama" value="<?= $_GET['search'] ?? '' ?>" class="border rounded px-2 py-1 w-36">
-                <input type="date" name="tanggal" value="<?= $_GET['tanggal'] ?? '' ?>" class="border rounded px-2 py-1 w-36">
-                <input type="text" name="kampus" placeholder="Nama Kampus" value="<?= $_GET['kampus'] ?? '' ?>" class="border rounded px-2 py-1 w-40">
-                <select name="paket" class="border rounded px-2 py-1 w-32">
-                    <option value="">Paket</option>
-                    <option <?= (@$_GET['paket'] == 'Single A') ? 'selected' : '' ?>>Single A</option>
-                    <option <?= (@$_GET['paket'] == 'Couple A') ? 'selected' : '' ?>>Couple A</option>
-                    <option <?= (@$_GET['paket'] == 'Group A') ? 'selected' : '' ?>>Group A</option>
-                </select>
-                <button type="submit" class="bg-black text-white px-4 py-1 rounded hover:bg-gray-800">Terapkan</button>
-            </form>
-
-            <!-- Show Entries -->
-            <div class="flex items-center space-x-2">
-                <label for="entries" class="text-gray-700">Show</label>
-                <select id="entries" name="entries" class="border px-2 py-1 rounded text-sm">
-                    <option <?= (@$_GET['entries'] == '5') ? 'selected' : '' ?>>5</option>
-                    <option <?= (@$_GET['entries'] == '10') ? 'selected' : '' ?>>10</option>
-                    <option <?= (@$_GET['entries'] == '25' || !isset($_GET['entries'])) ? 'selected' : '' ?>>25</option>
-                    <option <?= (@$_GET['entries'] == '50') ? 'selected' : '' ?>>50</option>
-                    <option <?= (@$_GET['entries'] == '100') ? 'selected' : '' ?>>100</option>
-                </select>
-                <span class="text-gray-700">entries</span>
-            </div>
-
-        </div>
-
-
-        <!-- Tabel -->
+    <div class="bg-white rounded-lg shadow-md p-6 text-sm">
         <div class="overflow-x-auto">
-            <table class="min-w-full border border-gray-300 text-left text-sm">
-                <thead class="bg-gray-100 text-gray-700">
-                    <tr>
-                        <th class="border p-2">No</th>
-                        <th class="border p-2">Tanggal</th>
-                        <th class="border p-2">ID/Nama Klien</th>
-                        <th class="border p-2">Asal Universitas</th>
-                        <th class="border p-2">Whatsapp</th>
-                        <th class="border p-2">Instagram</th>
-                        <th class="border p-2">Paket</th>
-                        <th class="border p-2">Tanggal/Sesi</th>
-                        <th class="border p-2">Lokasi</th>
-                        <th class="border p-2">Pembayaran</th>
-                        <th class="border p-2">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($riwayat as $i => $r): ?>
+            <?php if (empty($pesanan)) : ?>
+                <div class="text-center text-gray-500 italic py-4">Tidak ada data riwayat pesanan.</div>
+            <?php else : ?>
+                <table class="min-w-full border border-gray-300 text-sm">
+                    <thead class="bg-gray-100 text-gray-700">
                         <tr>
-                            <td class="border p-2"><?= $i + 1 ?></td>
-                            <td class="border p-2"><?= $r['tanggal'] ?></td>
-                            <td class="border p-2"><?= $r['id'] ?><br><span class="text-gray-500"><?= $r['nama_klien'] ?></span></td>
-                            <td class="border p-2"><?= $r['asal_universitas'] ?></td>
-                            <td class="border p-2"><?= $r['whatsapp'] ?></td>
-                            <td class="border p-2"><?= $r['instagram'] ?></td>
-                            <td class="border p-2"><?= $r['paket'] ?></td>
-                            <td class="border p-2"><?= $r['tanggal_sesi'] ?></td>
-                            <td class="border p-2"><?= $r['lokasi'] ?></td>
-                            <td class="border p-2"><?= $r['pembayaran'] ?></td>
-                            <td class="border p-2">
-                                <?php if ($r['status'] == 'Selesai'): ?>
-                                    <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">Selesai</span>
-                                <?php endif; ?>
-                            </td>
+                            <th class="p-2 border w-10">No</th>
+                            <th class="p-2 border min-w-[180px]">ID / Nama</th>
+                            <th class="p-2 border min-w-[120px]">Paket</th>
+                            <th class="p-2 border min-w-[120px]">Tgl Sesi</th>
+                            <th class="p-2 border min-w-[150px]">Lokasi</th>
+                            <th class="p-2 border min-w-[130px]">Metode Bayar</th>
+                            <th class="p-2 border min-w-[100px]">Total</th>
+                            <th class="p-2 border min-w-[120px]">Status Bayar</th>
+                            <th class="p-2 border min-w-[130px]">Link Drive</th>
+                            <th class="p-2 border min-w-[140px]">Keterangan</th>
                         </tr>
-                    <?php endforeach ?>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Footer pagination dummy -->
-        <div class="flex justify-between items-center mt-4 text-gray-600 text-sm">
-            <div>Showing 1 to <?= count($riwayat) ?> of <?= count($riwayat) ?> entries</div>
-            <div class="space-x-1">
-                <button class="px-3 py-1 border rounded hover:bg-gray-100 disabled:opacity-50" disabled>Previous</button>
-                <button class="px-3 py-1 border rounded hover:bg-gray-100 bg-black text-white">1</button>
-                <button class="px-3 py-1 border rounded hover:bg-gray-100">Next</button>
-            </div>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($pesanan as $i => $row) : ?>
+                            <tr class="border-t hover:bg-gray-50">
+                                <td class="p-2 border text-center"><?= $i + 1 ?></td>
+                                <td class="p-2 border">
+                                    <div class="font-medium"><?= esc($row['id']) ?></div>
+                                    <div><?= esc($row['nama_lengkap']) ?></div>
+                                </td>
+                                <td class="p-2 border"><?= esc($row['nama_paket']) ?></td>
+                                <td class="p-2 border"><?= esc($row['tanggal_sesi']) ?></td>
+                                <td class="p-2 border"><?= esc($row['lokasi']) ?></td>
+                                <td class="p-2 border"><?= esc($row['metode_pembayaran']) ?></td>
+                                <td class="p-2 border">Rp. <?= number_format($row['total_tagihan'], 0, ',', '.') ?></td>
+                                <td class="p-2 border">
+                                    <span class="px-2 py-1 rounded text-white text-xs
+                                        <?= $row['status_pembayaran'] == 'Lunas' ? 'bg-green-600' : ($row['status_pembayaran'] == 'Belum Lunas' ? 'bg-yellow-500' : 'bg-gray-400') ?>">
+                                        <?= esc($row['status_pembayaran']) ?>
+                                    </span>
+                                </td>
+                                <td class="p-2 border">
+                                    <?php if (!empty($row['link_drive'])) : ?>
+                                        <a href="<?= esc($row['link_drive']) ?>" target="_blank" class="text-blue-600 underline">Lihat</a>
+                                    <?php else : ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+                                <td class="p-2 border"><?= esc($row['keterangan']) ?: '-' ?></td>
+                            </tr>
+                        <?php endforeach ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
         </div>
     </div>
-</section>
+</div>
 
 <?= $this->endSection() ?>
