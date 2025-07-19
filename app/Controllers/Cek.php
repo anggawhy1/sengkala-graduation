@@ -97,7 +97,7 @@ class Cek extends BaseController
 
             $pembayaranModel = new \App\Models\PembayaranModel();
             $pembayaranModel->where('pesanan_id', $id)
-                ->set(['bukti_pembayaran' => $namaFile, 'status_pembayaran' => 'Menunggu Verifikasi'])
+                ->set(['bukti_pembayaran' => $namaFile])
                 ->update();
 
             return redirect()->to('/cek_detail/' . $id)->with('success', 'Bukti berhasil diunggah.');
