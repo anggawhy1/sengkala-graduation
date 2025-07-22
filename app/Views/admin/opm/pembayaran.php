@@ -73,7 +73,9 @@
                                 <td class="p-2 border"><?= $row['metode'] ?></td>
                                 <td class="p-2 border">
                                     <?php if (!empty($row['bukti']) && $row['bukti'] !== '-'): ?>
-                                        <a href="/uploads/bukti/<?= $row['bukti'] ?>" target="_blank">Lihat</a>
+                                        <!-- <a href="/uploads/bukti/<?= $row['bukti'] ?>" target="_blank">Lihat</a> -->
+                                         <a href="/uploads/bukti/<?= $row['bukti'] ?>?t=<?= time() ?>" target="_blank">Lihat</a>
+
                                     <?php else: ?>
                                         <span class="text-gray-400 italic">Belum Upload</span>
                                     <?php endif; ?>
@@ -151,7 +153,9 @@
             <div><strong>Additional</strong></div><div>: ${data.additional || '-'}</div>
             <div><strong>Bukti Transfer</strong></div><div>: ${
                 data.bukti && data.bukti !== '-'
-                    ? `<a href="/uploads/bukti/${data.bukti}" target="_blank" class="text-blue-600 underline">Lihat Bukti</a>`
+                    // ? `<a href="/uploads/bukti/${data.bukti}" target="_blank" class="text-blue-600 underline">Lihat Bukti</a>`
+                    ? `<a href="/uploads/bukti/${data.bukti}?t=${Date.now()}" target="_blank" class="text-blue-600 underline">Lihat Bukti</a>`
+
                     : `<span class="text-gray-400 italic">Belum Upload</span>`
             }</div>
         `;
