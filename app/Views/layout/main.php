@@ -42,13 +42,13 @@
 
 </head>
 
-<body class="bg-white font-nunito">
+<body class="bg-white font-nunito overflow-x-hidden">
 
     <!-- Navbar -->
     <?= view('partials/navbar') ?>
 
     <!-- Main Content -->
-    <main class="pt-16">
+    <main class="pt-15">
         <?= $this->renderSection('content') ?>
     </main>
 
