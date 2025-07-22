@@ -27,29 +27,50 @@ class Pembayaran extends BaseController
             ->findAll();
 
         foreach ($rows as &$r) {
-            $p = (new PesananModel())->find($r['pesanan_id']);
-            $paket = (new \App\Models\PaketModel())->find($p['paket_id'] ?? null);
+            $p = $pesananModel->find($r['pesanan_id']);
+            $paket = $paketModel->find($p['paket_id'] ?? null);
 
+            $total = $r['total_tagihan'] ?? 0;
+            $status = $r['status_pembayaran'] ?? null;
+            $jenis = $p['jenis_pembayaran'] ?? null;
+
+            // Hitung sisa tagihan
+            if ($status === 'Belum Bayar') {
+                $sisa = $total;
+            } elseif ($status === 'Belum Lunas') {
+                if ($jenis === 'DP') {
+                    $sisa = $total * 0.7;
+                } elseif (!empty($jenis)) {
+                    $sisa = $total;
+                } else {
+                    $sisa = 'Data Tidak Lengkap';
+                }
+            } elseif ($status === 'Lunas') {
+                $sisa = 0;
+            } else {
+                $sisa = 'Data Tidak Lengkap';
+            }
+
+            // Tambahkan data ke row
             $r['id_pembayaran'] = $r['id'];
             $r['id'] = $p['id'] ?? '-';
-
             $r['nama_klien'] = $p['nama_lengkap'] ?? '-';
             $r['paket'] = $paket['nama_paket'] ?? '-';
             $r['lokasi'] = $p['lokasi'] ?? '-';
-            $r['total'] = $r['total_tagihan'];
-            $r['sisa']  = $r['sisa_tagihan'];
+            $r['total'] = $total;
+            $r['sisa']  = $sisa;
             $r['metode'] = $p['metode_pembayaran'] ?? '-';
             $r['bukti'] = (!empty($r['bukti_pembayaran'])) ? $r['bukti_pembayaran'] : '-';
-            $r['status'] = $r['status_pembayaran'];
+            $r['status'] = $status;
             $r['tanggal_pesan'] = isset($p['tanggal_pesan']) ? date('Y-m-d', strtotime($p['tanggal_pesan'])) : '-';
             $r['tanggal_sesi'] = isset($p['tanggal_sesi']) ? date('Y-m-d', strtotime($p['tanggal_sesi'])) : '-';
             $r['tanggal_konfirmasi'] = isset($r['tanggal_konfirmasi']) ? date('Y-m-d', strtotime($r['tanggal_konfirmasi'])) : '-';
             $r['additional'] = $p['keterangan'] ?? '-';
         }
 
-
         return view('admin/opm/pembayaran', ['pembayaran' => $rows]);
     }
+
 
     public function detail($id)
     {
