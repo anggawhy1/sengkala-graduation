@@ -54,6 +54,9 @@ $routes->post('/cek', 'Cek::proses');
 $routes->get('/cek_detail/(:segment)', 'Cek::detail/$1');
 $routes->post('/unggah_bukti', 'Cek::unggahBukti');
 $routes->get('invoice/(:segment)', 'Cek::cetakInvoice/$1');
+$routes->get('/lihat_bukti/(:segment)', 'Pembayaran::lihatBukti/$1');
+
+
 
 
 

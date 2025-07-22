@@ -132,4 +132,34 @@ class Pembayaran extends BaseController
 
         return redirect()->to('/admin/opm/pembayaran')->with('success', 'Status pembayaran berhasil diperbarui.');
     }
+    public function lihatBukti($id)
+{
+    $pembayaranModel = new \App\Models\PembayaranModel();
+    $data = $pembayaranModel->where('pesanan_id', $id)->first();
+
+    if (!$data || empty($data['bukti_pembayaran'])) {
+        return redirect()->back()->with('error', 'Bukti tidak ditemukan');
+    }
+
+    // Cek apakah kolom tersedia dan data bukan null
+    if (isset($data['updated_at']) && isset($data['terakhir_dilihat'])) {
+        // Update waktu terakhir dilihat jika berbeda dari updated_at
+        if (strtotime($data['terakhir_dilihat']) < strtotime($data['updated_at'])) {
+            $pembayaranModel
+                ->where('pesanan_id', $id)
+                ->set(['terakhir_dilihat' => date('Y-m-d H:i:s')])
+                ->update();
+        }
+    } else {
+        // Tetap update jika kolom belum pernah terisi
+        $pembayaranModel
+            ->where('pesanan_id', $id)
+            ->set(['terakhir_dilihat' => date('Y-m-d H:i:s')])
+            ->update();
+    }
+
+    // Redirect ke file bukti
+    return redirect()->to(base_url('uploads/bukti/' . $data['bukti_pembayaran']));
+}
+
 }

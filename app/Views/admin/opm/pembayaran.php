@@ -74,7 +74,14 @@
                                 <td class="p-2 border">
                                     <?php if (!empty($row['bukti']) && $row['bukti'] !== '-'): ?>
                                         <!-- <a href="/uploads/bukti/<?= $row['bukti'] ?>" target="_blank">Lihat</a> -->
-                                         <a href="/uploads/bukti/<?= $row['bukti'] ?>?t=<?= time() ?>" target="_blank">Lihat</a>
+                                        <!-- <a href="/uploads/bukti/<?= $row['bukti'] ?>?t=<?= time() ?>" target="_blank">Lihat</a> -->
+                                        <?php
+                                        $isBaru = !isset($row['terakhir_dilihat']) || strtotime($row['terakhir_dilihat']) < strtotime($row['updated_at']);
+
+                                        $warna = $isBaru ? 'text-blue-600 underline' : 'text-gray-500';
+                                        ?>
+
+                                        <a href="/lihat_bukti/<?= $row['id'] ?>" class="<?= $warna ?>" target="_blank">Lihat</a>
 
                                     <?php else: ?>
                                         <span class="text-gray-400 italic">Belum Upload</span>

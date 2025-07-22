@@ -10,7 +10,7 @@ class PembayaranModel extends Model {
         'id', // pastikan juga `id` bisa di-set secara manual
         'pesanan_id', 'status_pembayaran', 'total_tagihan', 'dp_dibayar',
         'sisa_tagihan', 'deadline_pelunasan', 'bukti_pembayaran',
-        'tanggal_konfirmasi'
+        'tanggal_konfirmasi', 'terakhir_dilihat' ,'updated_at'
     ];
 
     /**
