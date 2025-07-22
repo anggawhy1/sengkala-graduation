@@ -26,12 +26,12 @@
         <div>: <?= $metode ?></div>
 
         <?php
-          $rekening = '-';
-          if ($metode === 'SeaBank') {
-              $rekening = '901395136295';
-          } elseif ($metode === 'DANA') {
-              $rekening = '081912662103';
-          }
+        $rekening = '-';
+        if ($metode === 'SeaBank') {
+          $rekening = '901395136295';
+        } elseif ($metode === 'DANA') {
+          $rekening = '081912662103';
+        }
         ?>
         <div>Nomor Rekening</div>
         <div>: <?= $rekening ?></div>
@@ -78,7 +78,7 @@
         <div class="mt-4 flex flex-col gap-4">
           <p class="text-sm text-gray-700">Lakukan Pelunasan Sekarang</p>
 
-          <form method="POST" action="<?= base_url('/unggah_bukti') ?>" enctype="multipart/form-data" class="space-y-3">
+          <form method="POST" action="<?= base_url('/unggah_bukti') ?>" enctype="multipart/form-data" class="space-y-3" id="formUpload">
             <input type="hidden" name="id" value="<?= $id ?>">
 
             <div>
@@ -95,9 +95,11 @@
               <p class="text-xs text-gray-500 mt-1">Format: .jpg, .png, .pdf (Max 2MB)</p>
             </div>
 
-            <button type="submit" class="bg-gray-800 hover:bg-black text-white px-4 py-2 rounded">
+            <!-- Jangan submit langsung -->
+            <button type="button" onclick="bukaModal()" class="bg-gray-800 hover:bg-black text-white px-4 py-2 rounded">
               Kirim Bukti
             </button>
+
           </form>
         </div>
       <?php endif; ?>
@@ -128,15 +130,17 @@
         <?php endif; ?>
 
         <!-- 3. Menunggu Pelunasan -->
-        <?php if ($jenis_pembayaran === 'DP') : ?>
+        <?php if ($jenis_pembayaran === 'DP' && $status_bayar !== 'Belum Bayar') : ?>
           <li class="flex items-center gap-2">
             <?php if ($status_bayar === 'Lunas') : ?>
               <i class="fas fa-check text-green-600"></i>
-            <?php elseif ($status_bayar !== 'Belum Bayar') : ?>
+            <?php else : ?>
               <i class="fas fa-clock text-yellow-500"></i>
             <?php endif; ?>
+            Menunggu Pelunasan
           </li>
         <?php endif; ?>
+
 
         <!-- Sesi Pemotretan -->
         <?php if ($status_bayar === 'Lunas') : ?>
@@ -178,5 +182,41 @@
 
   </div>
 </section>
+
+<!-- Modal Konfirmasi Upload -->
+<div id="modalKonfirmasi" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
+  <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
+    <h3 class="text-xl font-semibold text-gray-800 mb-4">Konfirmasi Upload</h3>
+    <p class="text-sm text-gray-600 mb-6">Apakah Anda yakin ingin mengunggah bukti pembayaran sekarang?</p>
+    <div class="flex justify-end gap-3">
+      <button onclick="tutupModal()" class="px-4 py-2 text-gray-700 border border-gray-400 rounded hover:bg-gray-100">
+        Batal
+      </button>
+      <button onclick="kirimForm()" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+        Ya, Kirim
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function bukaModal() {
+    const fileInput = document.getElementById('bukti');
+    if (!fileInput.value) {
+      alert('Silakan pilih file bukti terlebih dahulu.');
+      return;
+    }
+    document.getElementById('modalKonfirmasi').classList.remove('hidden');
+  }
+
+  function tutupModal() {
+    document.getElementById('modalKonfirmasi').classList.add('hidden');
+  }
+
+  function kirimForm() {
+    document.getElementById('formUpload').submit();
+  }
+</script>
 
 <?= $this->endSection() ?>
