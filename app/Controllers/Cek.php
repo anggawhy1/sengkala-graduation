@@ -92,7 +92,8 @@ class Cek extends BaseController
         $bukti = $this->request->getFile('bukti');
 
         if ($bukti->isValid() && !$bukti->hasMoved()) {
-            $namaFile = $bukti->getRandomName();
+            // $namaFile = $bukti->getRandomName();
+            $namaFile = time() . '_' . $bukti->getRandomName();
             $bukti->move('uploads/bukti/', $namaFile);
 
             $pembayaranModel = new \App\Models\PembayaranModel();
