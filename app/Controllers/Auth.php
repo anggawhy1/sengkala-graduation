@@ -23,14 +23,14 @@ class Auth extends BaseController
             // Login success
             session()->set('admin_id', $admin['id']);
             session()->set('username', $admin['username']);
-            return redirect()->to('admin/dashboard'); // ganti sesuai tujuan
+            session()->set('admin', $admin); // ⬅️ Tambahkan ini
+            return redirect()->to('admin/dashboard');
         } else {
             // Login gagal
             return redirect()->back()->withInput()->with('error', 'Username atau Password salah!');
         }
     }
-
-
+    
     public function logout()
     {
         session()->destroy();
